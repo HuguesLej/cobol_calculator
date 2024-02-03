@@ -3,20 +3,20 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01 CL-OPERAND-ONE           PIC S9(10)
+       01 CL-OPERAND-ONE           PIC S9(10)V9(10)
                    SIGN IS LEADING SEPARATE CHARACTER.
-       01 CL-OPERAND-TWO           PIC S9(10)
+       01 CL-OPERAND-TWO           PIC S9(10)V9(10)
                    SIGN IS LEADING SEPARATE CHARACTER.
        01 CL-OPERATOR              PIC X(2).
        01 CL-OPERATION-STRING      PIC X(100).
 
-       01 CL-RESULT                PIC S9(20)
+       01 CL-RESULT                PIC S9(20)V9(10)
                    SIGN IS LEADING SEPARATE CHARACTER       VALUE 0.
-       01 CL-CLEAN-RESULT          PIC -Z(20).
-       01 CL-STR-RESULT            PIC X(21).
-       01 CL-REMAINDER             PIC S9(20)
+       01 CL-CLEAN-RESULT          PIC -Z(20).Z(10).
+       01 CL-STR-RESULT            PIC X(30).
+       01 CL-REMAINDER             PIC S9(20)V9(10)
                    SIGN IS LEADING SEPARATE CHARACTER       VALUE 0.
-       01 CL-EXPONENT-COUNT        PIC S9(10)
+       01 CL-EXPONENT-COUNT        PIC S9(10)V9(10)
                    SIGN IS LEADING SEPARATE CHARACTER       VALUE 0.
 
        PROCEDURE DIVISION.
@@ -33,16 +33,22 @@
            INITIALIZE CL-OPERATION-STRING.
            INITIALIZE CL-CLEAN-RESULT.
        1000-ACCEPT-DATA.
-           DISPLAY "Enter your calculation.".
-           DISPLAY "You have to use 2 operands and one operator, "
-                   "separate by at least one space.".
-           DISPLAY "Operands must be integers with no more than 10 "
-                   "digits each.".
-           DISPLAY "Allowed operator are +, -, *, **, /, %.".
-           DISPLAY "For now, all operands have to be positive.".
+           DISPLAY "Enter your calculation or type -h for help.".
            DISPLAY SPACES.
 
            ACCEPT CL-OPERATION-STRING.
+       1000-HELP.
+           IF CL-OPERATION-STRING EQUAL "-h"
+               DISPLAY "You have to use 2 operands and one operator,"
+                       " separate by at least one space."
+               DISPLAY "Operands must be real numbers with no more than"
+                       " 10 digits before the decimal point and no more"
+                       " than 10 digits after the decimal point."
+               DISPLAY "Allowed operator are +, -, *, **, /, %."
+               DISPLAY "For example:"
+               DISPLAY "5 + 5          is a correct operation."
+               DISPLAY "5+5            is an invalid operation."
+               STOP RUN.
        1000-PARSE-DATA.
            UNSTRING CL-OPERATION-STRING DELIMITED BY ALL SPACE
                INTO
