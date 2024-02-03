@@ -18,7 +18,7 @@ Note: The use of `COMPUTE` statement is voluntarily avoided to perform operation
 
 ## How to use
 
-First, you need to download a Cobol compilator such as [GnuCOBOL](https://gnucobol.sourceforge.io/).
+First, you need to download a COBOL compilator such as [GnuCOBOL](https://gnucobol.sourceforge.io/).
 
 Compile the program. Here is an example using GnuCOBOL.
 ```
