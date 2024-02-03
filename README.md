@@ -1,9 +1,7 @@
 # cobol_calculator
 
-This project is not terminated yet.
+A simple calculator coded in COBOL.
 
-A simple calculator coded in Cobol.
-The use of `COMPUTE` statement is voluntarily avoided to perform operations.
 It allows you to perform basic operations such as:
 - `+` (add)
 - `-` (subtract)
@@ -11,3 +9,22 @@ It allows you to perform basic operations such as:
 - `**` (exponent)
 - `/` (divide)
 - `%` (modulo)
+
+All real numbers can be used as long as they have no more than 10 digits before the decimal point and no more than 10 digits after the decimal point.
+
+The result can not have more than 20 digits before the decimal point and more than 10 digits after the decimal point.
+
+Note: The use of `COMPUTE` statement is voluntarily avoided to perform operations.
+
+## How to use
+
+First, you need to download a Cobol compilator such as [GnuCOBOL](https://gnucobol.sourceforge.io/).
+
+Compile the program. Here is an example using GnuCOBOL.
+```
+cobc -x CALCULATOR.cbl
+```
+Run the program and follow instructions.
+```
+./CALCULATOR
+```
