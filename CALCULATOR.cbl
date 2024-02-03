@@ -3,23 +3,35 @@
 
        DATA DIVISION.
        WORKING-STORAGE SECTION.
-       01 CL-OPERAND-ONE           PIC 9(10).
-       01 CL-OPERAND-TWO           PIC 9(10).
+       01 CL-OPERAND-ONE           PIC S9(10)
+                   SIGN IS LEADING SEPARATE CHARACTER.
+       01 CL-OPERAND-TWO           PIC S9(10)
+                   SIGN IS LEADING SEPARATE CHARACTER.
        01 CL-OPERATOR              PIC X(2).
        01 CL-OPERATION-STRING      PIC X(100).
 
-       01 CL-RESULT                PIC 9(20)       VALUE 0.
-       01 CL-CLEAN-RESULT          PIC Z(20).
-       01 CL-REMAINDER             PIC 9(20)       VALUE 0.
-       01 CL-EXPONENT-COUNT        PIC 9(10)       VALUE 0.
+       01 CL-RESULT                PIC S9(20)
+                   SIGN IS LEADING SEPARATE CHARACTER       VALUE 0.
+       01 CL-CLEAN-RESULT          PIC -Z(20).
+       01 CL-STR-RESULT            PIC X(21).
+       01 CL-REMAINDER             PIC S9(20)
+                   SIGN IS LEADING SEPARATE CHARACTER       VALUE 0.
+       01 CL-EXPONENT-COUNT        PIC S9(10)
+                   SIGN IS LEADING SEPARATE CHARACTER       VALUE 0.
 
        PROCEDURE DIVISION.
+           PERFORM 1000-GET-DATA.
+           PERFORM 2000-CALCULATE.
+           PERFORM 3000-DISPLAY.
+           STOP RUN.
+
        1000-GET-DATA SECTION.
        1000-INITIALIZE-DATA.
            INITIALIZE CL-OPERAND-ONE.
            INITIALIZE CL-OPERAND-TWO.
            INITIALIZE CL-OPERATOR.
            INITIALIZE CL-OPERATION-STRING.
+           INITIALIZE CL-CLEAN-RESULT.
        1000-ACCEPT-DATA.
            DISPLAY "Enter your calculation.".
            DISPLAY "You have to use 2 operands and one operator, "
@@ -41,48 +53,62 @@
                    DISPLAY "Overflow! Please verify the length of your"
                            " operands."
            END-UNSTRING.
-       
+
        2000-CALCULATE SECTION.
            IF CL-OPERATOR EQUAL "+"
-               PERFORM 3000-ADD
+               PERFORM 4000-ADD
            END-IF.
            IF CL-OPERATOR EQUAL "-"
-               PERFORM 3000-SUBTRACT
+               PERFORM 4000-SUBTRACT
            END-IF.
            IF CL-OPERATOR EQUAL "*"
-               PERFORM 3000-MULTIPLY
+               PERFORM 4000-MULTIPLY
            END-IF.
            IF CL-OPERATOR EQUAL "**"
-               PERFORM 3000-EXPONENT
+               PERFORM 4000-EXPONENT
            END-IF.
            IF CL-OPERATOR EQUAL "/"
-               PERFORM 3000-DIVIDE
+               PERFORM 4000-DIVIDE
            END-IF.
            IF CL-OPERATOR EQUAL "%"
-               PERFORM 3000-MODULO
+               PERFORM 4000-MODULO
            END-IF.
 
-           MOVE CL-RESULT TO CL-CLEAN-RESULT.
-           DISPLAY CL-CLEAN-RESULT.
-           STOP RUN.
+       3000-DISPLAY SECTION.
+           IF CL-RESULT = 0
+               DISPLAY "0"
+           ELSE
+               MOVE CL-RESULT TO CL-CLEAN-RESULT
+               UNSTRING CL-CLEAN-RESULT DELIMITED BY ALL SPACE
+                   INTO CL-STR-RESULT
+                        CL-STR-RESULT
+               END-UNSTRING
+               IF CL-RESULT < 0
+                   DISPLAY "         -" CL-STR-RESULT
+               ELSE
+                      DISPLAY "          " CL-STR-RESULT
+               END-IF
+           END-IF.
 
-       3000-OPERATORS SECTION.
-       3000-ADD.
+       4000-OPERATORS SECTION.
+       4000-ADD.
            ADD CL-OPERAND-ONE TO CL-OPERAND-TWO GIVING CL-RESULT.
-       3000-SUBTRACT.
+       4000-SUBTRACT.
            SUBTRACT CL-OPERAND-ONE FROM CL-OPERAND-TWO GIVING CL-RESULT.
-       3000-MULTIPLY.
+           IF CL-RESULT > 0 AND CL-OPERAND-TWO > CL-OPERAND-ONE
+               MULTIPLY -1 BY CL-RESULT.
+       4000-MULTIPLY.
            MULTIPLY CL-OPERAND-ONE BY CL-OPERAND-TWO GIVING CL-RESULT.
-       3000-EXPONENT.
+       4000-EXPONENT.
            COMPUTE CL-RESULT = 1.
            PERFORM UNTIL CL-EXPONENT-COUNT EQUAL CL-OPERAND-TWO
                MULTIPLY CL-OPERAND-ONE BY CL-RESULT
                ADD 1 TO CL-EXPONENT-COUNT
            END-PERFORM.
-       3000-DIVIDE.
+       4000-DIVIDE.
            DIVIDE CL-OPERAND-ONE BY CL-OPERAND-TWO GIVING CL-RESULT
                REMAINDER CL-REMAINDER.
-       3000-MODULO.
+       4000-MODULO.
            DIVIDE CL-OPERAND-ONE BY CL-OPERAND-TWO GIVING CL-RESULT
                REMAINDER CL-REMAINDER.
            COMPUTE CL-RESULT = CL-REMAINDER.
